@@ -1,3 +1,11 @@
+const showLoader = () => {
+  document.getElementById("loader").classList.remove("hidden");
+  document.getElementById("video-container").classList.add("hidden");
+};
+const hideLoader = () => {
+  document.getElementById("loader").classList.add("hidden");
+  document.getElementById("video-container").classList.remove("hidden");
+};
 const removeActiveClass = () => {
   const activeButtons = document.getElementsByClassName("active");
   for (let btn of activeButtons) {
@@ -5,6 +13,7 @@ const removeActiveClass = () => {
   }
 };
 const loadCategories = () => {
+  showLoader()
   //   fetch the data
   fetch("https://openapi.programming-hero.com/api/phero-tube/categories")
     //   convert promise to json
@@ -13,7 +22,10 @@ const loadCategories = () => {
     .then((data) => displayCategories(data.categories));
 };
 const loadVideos = (searchText = "") => {
-  fetch(`https://openapi.programming-hero.com/api/phero-tube/videos?title=${searchText}`)
+  showLoader()
+  fetch(
+    `https://openapi.programming-hero.com/api/phero-tube/videos?title=${searchText}`
+  )
     .then((response) => response.json())
     .then((data) => {
       removeActiveClass();
@@ -91,6 +103,8 @@ const displayVideos = (videos) => {
         </h2>
       </div>
     `;
+    hideLoader()
+    return
   }
   videos.forEach((video) => {
     // console.log(video)
@@ -146,9 +160,10 @@ const displayVideos = (videos) => {
         `;
     videoContainer.append(videoCard);
   });
+  hideLoader()
 };
-document.getElementById("search-input").addEventListener("keyup",(event)=>{
-  const input = event.target.value
-  loadVideos(input)
-})
+document.getElementById("search-input").addEventListener("keyup", (event) => {
+  const input = event.target.value;
+  loadVideos(input);
+});
 loadCategories();
